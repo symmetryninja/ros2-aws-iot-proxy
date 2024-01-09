@@ -1,0 +1,16 @@
+{
+  "endpoint" : "ENDPOINT-ats.iot.REGION.amazonaws.com",
+  "rootCAPath" : "/path_to/rootCA.crt",
+  "certificatePath" : "/path_to/device.cert.pem",
+  "privateKeyPath" : "/path_to/device.private.key",
+  "port" : 8883,
+  "clientID" : "CLIENTID",
+  "iot_topics": [
+    [ "iotTopic1_src", "rostopic1_dst" ],
+    [ "iotTopic2_src", "rostopic2_dst" ]
+  ],
+  "ros_topics": [
+    [ "rostopic1_src", "iotTopic1_dst" ],
+    [ "rostopic2_src", "iotTopic2_dst" ]
+  ]
+}
