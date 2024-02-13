@@ -22,14 +22,18 @@ class MqttBridge(Node):
         self.path_for_config = self.get_parameter('path_for_config').get_parameter_value().string_value
         self.get_logger().info('AWS IOT config file: %s!' % self.path_for_config)
 
+
         with open(self.path_for_config) as f:
           self.bridge_config = json.load(f)
+
+        self.debug_messages = True if "debug" in self.bridge_config and self.bridge_config['debug'] == "true" else False
+
 
         # detect whether the endpoint URL has been overridden
         if len(self.iot_endpoint) != 0:
             self.bridge_config['endpoint'] = self.iot_endpoint
 
-        self.get_logger().info('Config we are loading is :\n{}'.format(self.bridge_config))
+        self.log_message('Config we are loading is :\n{}'.format(self.bridge_config))
         # Build mqtt connection
         self.mqtt_conn = mqtt_connection_builder.mtls_from_path(
             endpoint=self.bridge_config['endpoint'],
@@ -54,14 +58,14 @@ class MqttBridge(Node):
         self.mqtt_ros_map = {} # a map of iot topics to ros topics
 
         # iot-ros
-        self.get_logger().info('iot-ros - setting up subs and pubs')
+        self.log_message('iot-ros - setting up subs and pubs')
         self.init_mqtt_subs()
 
         self.ros_subscribers = {} # Subscribe to ROS topics and publish to IOT topics
         self.ros_mqtt_map = {}
 
         # ros-iot
-        self.get_logger().info('ros-iot - setting up subs')
+        self.log_message('ros-iot - setting up subs')
         self.init_ros_subs()
 
 
@@ -83,11 +87,11 @@ class MqttBridge(Node):
 
 
     def iot_on_message_received(self, topic, payload, **kwargs):
-        self.get_logger().info('Received message from IOT topic "{}": {}'.format(topic, payload))
+        self.log_message('Received message from IOT topic "{}": {}'.format(topic, payload))
         msg = String()
         msg.data = payload.strip().decode()
         self.ros_publishers[topic].publish(msg)
-        self.get_logger().info('Publishing: "{}" to "{}" '.format(msg.data, self.mqtt_ros_map[topic]))
+        self.log_message('Publishing: "{}" to "{}" '.format(msg.data, self.mqtt_ros_map[topic]))
 
 
     # ros-iot methods
@@ -103,7 +107,7 @@ class MqttBridge(Node):
 
 
     def ros_listener_callback(self, target_topic, msg):
-        self.get_logger().info('Received message from ROS2 topic "{}": {}'.format(target_topic, msg))
+        self.log_message('Received message from ROS2 topic "{}": {}'.format(target_topic, msg))
         payload = msg.data
         self.mqtt_conn.publish(
                 topic=target_topic,
@@ -114,9 +118,16 @@ class MqttBridge(Node):
     def dump(self, obj):
         for attr in dir(obj):
             print('obj.%s = %r' % (attr, getattr(obj, attr)))
+    
+    ## helper: a method to reduce chatty log messages
+    def log_message(self, message):
+        if self.debug_messages:
+            self.get_logger().info(message)
 
 
-# Stock callbacks
+
+
+# Stock IOT callbacks
     # Callback when connection is accidentally lost.
     def on_connection_interrupted(self, connection, error, **kwargs):
         self.get_logger().info('Connection interrupted. error: {}'.format(error))
