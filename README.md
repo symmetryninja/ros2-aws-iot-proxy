@@ -40,7 +40,8 @@ Update the endpoint, file paths and ClientID to the values from your IOT configu
 
 - The `incomingTopics` is the map for AWS IOT core topics to subscribe and push to ROS2 topics.
 - The `outgoingTopics` is the map for ROS2 topics to subscribe and push to AWS IOT core topics.
-- You can create a race if you map the same topics in both directions.
+- You can create a race condition if you map the same topics in both directions, this wont hurt the IOT brokers on the AWS end but it will probably cause your robot issues!
+- the `debug` field, if it's set to true, the console will be quite chatty - if it is not there or if it is not set to `"true"` it will not show proxy relay messages
 
 ```json
 {
@@ -50,6 +51,7 @@ Update the endpoint, file paths and ClientID to the values from your IOT configu
   "privateKeyPath" : "/path_to/device.private.key",
   "port" : 8883,
   "clientID" : "CLIENTID",
+  "debug" : "false",
   "incomingTopics": [
     [ "iotTopic1_src", "rostopic1_dst" ],
     [ "iotTopic2_src", "rostopic2_dst" ]
