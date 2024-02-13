@@ -5,6 +5,7 @@
   "privateKeyPath" : "/path_to/device.private.key",
   "port" : 8883,
   "clientID" : "CLIENTID",
+  "debug" : "false",
   "iot_topics": [
     [ "iotTopic1_src", "rostopic1_dst" ],
     [ "iotTopic2_src", "rostopic2_dst" ]
