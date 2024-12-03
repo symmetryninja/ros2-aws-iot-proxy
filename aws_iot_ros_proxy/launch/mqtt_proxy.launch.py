@@ -16,6 +16,12 @@ def generate_launch_description():
     except:
         path_to_config = "~/iot_params.json"
 
+    # use an environment variable for the endpoint, default to blank which then uses the parameter file
+    try:
+        iot_endpoint = EnvironmentVariable('AWS_IOT_ENDPOINT')
+    except KeyError:
+        iot_endpoint = ""
+
     ## MQTT <> ROS bridge
     launch_description.add_action(
         Node(
@@ -23,7 +29,8 @@ def generate_launch_description():
             executable='aws_iot_ros_proxy',
             name='mqtt_proxy',
             parameters= [
-                {'path_for_config': path_to_config }
+                {'path_for_config': path_to_config },
+                {'iot_endpoint': iot_endpoint},
             ]
         ))
 
