@@ -18,7 +18,7 @@ setup(
     maintainer='spidey',
     maintainer_email='adam@symmetry.ninja',
     description='AWS ROS IoT proxy',
-    license='BEERWARE',
+    license='MIT-0',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
