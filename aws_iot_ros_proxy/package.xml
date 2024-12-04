@@ -3,9 +3,9 @@
 <package format="3">
   <name>aws_iot_ros_proxy</name>
   <version>1.0.0</version>
-  <description>AWS IoT ROS2-humble Proxy</description>
+  <description>AWS IoT ROS Proxy ROS2</description>
   <maintainer email="adam@symmetry.ninja">spidey</maintainer>
-  <license>BEERWARE</license>
+  <license>MIT-0</license>
 
   <test_depend>ament_copyright</test_depend>
   <test_depend>ament_flake8</test_depend>
