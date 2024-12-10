@@ -6,20 +6,25 @@ from ament_index_python.packages import get_package_share_directory
 from launch.actions import DeclareLaunchArgument, LogInfo
 from std_msgs.msg import Empty
 from launch.substitutions import EnvironmentVariable
+import os
 
 def generate_launch_description():
     launch_description = LaunchDescription()
 
     # use an environment variable for the path, default to ~/iot_params.json
     try:
-        path_to_config = EnvironmentVariable('AWS_IOT_PARAMETER_FILE')
+        path_to_config = os.environ['AWS_IOT_PARAMETER_FILE']
+        if not path_to_config or path_to_config == "":
+            path_to_config = "~/certs/aws_iot_config.json"
     except:
-        path_to_config = "~/iot_params.json"
+        path_to_config = "~/certs/aws_iot_config.json"
 
-    # use an environment variable for the endpoint, default to blank which then uses the parameter file
+    # use an environment variable for the iot endpoint
     try:
-        iot_endpoint = EnvironmentVariable('AWS_IOT_ENDPOINT')
-    except KeyError:
+        iot_endpoint = os.environ['AWS_IOT_ENDPOINT']
+        if not iot_endpoint or iot_endpoint == "":
+            iot_endpoint = ""
+    except:
         iot_endpoint = ""
 
     ## MQTT <> ROS bridge
@@ -30,7 +35,7 @@ def generate_launch_description():
             name='mqtt_proxy',
             parameters= [
                 {'path_for_config': path_to_config },
-                {'iot_endpoint': iot_endpoint},
+                {'iot_endpoint': iot_endpoint },
             ]
         ))
 
